@@ -1,0 +1,4 @@
+.hg-button[aria-active='true'] {
+    outline: none;
+    background-color: #ccc !important;
+}

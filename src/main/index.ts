@@ -1,65 +1,12 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { join } from 'path';
-import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import icon from '../../resources/icon.png?asset';
+import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { moveMouse, leftClick, rightClick, keyPress } from './robot';
-import { Menu } from 'electron/main';
-import { menubar } from 'menubar';
+import { Store } from './storage';
+import { createBackgroundWindow } from './windows/background';
+import './windows/menubar';
+import { createKeyboardWindow } from './windows/keyboard';
 
-menubar({
-    browserWindow: {
-        width: 300,
-        height: 150,
-        show: false,
-        autoHideMenuBar: true,
-        ...(process.platform === 'linux' ? { icon } : {}),
-        webPreferences: {
-            preload: join(__dirname, '../preload/index.js'),
-            sandbox: false
-        },
-        frame: false,
-        resizable: false
-    },
-    index: is.dev && process.env['ELECTRON_RENDERER_URL'] ? process.env['ELECTRON_RENDERER_URL'] : undefined,
-    icon: './resources/gamepad.png'
-});
-
-function createWindow(): void {
-    // Create the browser window.
-    const backgroundWindow = new BrowserWindow({
-        width: 0,
-        height: 0,
-        show: false,
-        autoHideMenuBar: true,
-        ...(process.platform === 'linux' ? { icon } : {}),
-        webPreferences: {
-            preload: join(__dirname, '../preload/index.js'),
-            sandbox: false
-        },
-        frame: false,
-        resizable: false
-    });
-
-    backgroundWindow.on('ready-to-show', () => {
-        backgroundWindow.show();
-    });
-
-    // HMR for renderer base on electron-vite cli.
-    // Load the remote URL for development or the local html file for production.
-    if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-        backgroundWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/background.html`);
-    } else {
-        backgroundWindow.loadFile(join(__dirname, '../renderer/background.html'));
-    }
-}
-
-const dockMenu = Menu.buildFromTemplate([
-    {
-        label: 'Quit',
-        click: () => app.quit(),
-        accelerator: 'CmdOrCtrl+Q'
-    }
-]);
+let keyboardWindow: BrowserWindow | null = null;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -67,8 +14,6 @@ const dockMenu = Menu.buildFromTemplate([
 app.whenReady().then(() => {
     // Set app user model id for windows
     electronApp.setAppUserModelId('com.electron');
-
-    app.dock.setMenu(dockMenu);
 
     // Default open or close DevTools by F12 in development
     // and ignore CommandOrControl + R in production.
@@ -90,15 +35,32 @@ app.whenReady().then(() => {
     });
 
     ipcMain.handle('keyPress', (_, key: string) => {
+        console.log(key);
         keyPress(key);
     });
 
-    createWindow();
+    ipcMain.handle('getToggle', () => {
+        return Store.get('toggle');
+    });
+
+    ipcMain.handle('setToggle', (_, toggle: boolean) => {
+        Store.set('toggle', toggle);
+    });
+
+    ipcMain.handle('openKeyboard', () => {
+        if (!keyboardWindow) {
+            keyboardWindow = createKeyboardWindow();
+        } else {
+            keyboardWindow.show();
+        }
+    });
+
+    createBackgroundWindow();
 
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+        if (BrowserWindow.getAllWindows().length === 0) createBackgroundWindow();
     });
 });
 

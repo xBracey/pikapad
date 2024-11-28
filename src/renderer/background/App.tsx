@@ -1,27 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { useGamepadLoop } from '../utils/useGamepadLoop';
 
 function App(): JSX.Element {
-    const [connectedGamepad, setConnectedGamepad] = useState<Gamepad | null>(null);
-
-    useEffect(() => {
-        const gamepadEvent = (e: GamepadEvent) => {
-            setConnectedGamepad(e.gamepad);
-        };
-
-        window.addEventListener('gamepadconnected', gamepadEvent);
-
-        return () => {
-            window.removeEventListener('gamepadconnected', gamepadEvent);
-        };
-    }, []);
-
-    const gameLoop = useCallback(() => {
-        const gamepads = navigator.getGamepads();
-        if (!gamepads) return;
-
-        const gamepad = gamepads.find((g) => g?.index === connectedGamepad?.index);
-        if (!gamepad) return;
-
+    const gameLoop = useCallback((gamepad: Gamepad) => {
         if (gamepad.buttons[0].pressed) {
             console.log(window.electron.ipcRenderer);
             window.electron.ipcRenderer.invoke('leftClick');
@@ -39,28 +20,11 @@ function App(): JSX.Element {
         //         console.log(`Button ${key} pressed`);
         //     }
         // });
-    }, [connectedGamepad]);
+    }, []);
 
-    useEffect(() => {
-        const interval = setInterval(gameLoop, 1000 / 60);
-        return () => clearInterval(interval);
-    }, [gameLoop]);
+    useGamepadLoop(gameLoop);
 
-    return (
-        <div
-            style={{
-                width: '100vw',
-                height: '100vh',
-                backgroundColor: 'black',
-                color: 'white',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}
-        >
-            Hello World
-        </div>
-    );
+    return <div />;
 }
 
 export default App;
