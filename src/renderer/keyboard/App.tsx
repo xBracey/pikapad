@@ -101,7 +101,7 @@ export const App = (): JSX.Element => {
     useGamepadLoop(gameLoop);
 
     const onKeyPress = (button: string) => {
-        window.electron.ipcRenderer.invoke('keyPress', button);
+        window.electron.ipcRenderer.invoke('keyPress', button, true);
     };
 
     return <Keyboard onKeyPress={onKeyPress} keyboardRef={(r) => (keyboardRef.current = r)} />;

@@ -16,10 +16,10 @@ function App(): JSX.Element {
     };
 
     return (
-        <div className="h-screen w-screen flex items-center justify-center">
+        <div className="h-screen w-screen flex flex-col gap-4 items-center justify-center">
             <Toggle label={isActive ? 'Turn Off' : 'Turn On'} onChange={handleToggle} defaultChecked={isActive} />
 
-            <button onClick={() => window.electron.ipcRenderer.invoke('openKeyboard')}>Open Keyboard</button>
+            <button onClick={() => window.electron.ipcRenderer.invoke('openLog')}>Open Log</button>
         </div>
     );
 }

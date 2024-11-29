@@ -1,12 +1,16 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
-import { moveMouse, leftClick, rightClick, keyPress } from './robot';
+import { moveMouse, leftClick, rightClick, keyPress, swipeScreen } from './robot';
 import { Store } from './storage';
 import { createBackgroundWindow } from './windows/background';
 import './windows/menubar';
 import { createKeyboardWindow } from './windows/keyboard';
+import { createLogWindow } from './windows/log';
+
+const getKeyboardOpen = () => Store.get('keyboardOpen') ?? false;
 
 let keyboardWindow: BrowserWindow | null = null;
+let logWindow: BrowserWindow | null = null;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -34,9 +38,8 @@ app.whenReady().then(() => {
         rightClick();
     });
 
-    ipcMain.handle('keyPress', (_, key: string) => {
-        console.log(key);
-        keyPress(key);
+    ipcMain.handle('keyPress', (_, key: string, fromKeyboard: boolean = false) => {
+        keyPress(key, fromKeyboard);
     });
 
     ipcMain.handle('getToggle', () => {
@@ -48,11 +51,32 @@ app.whenReady().then(() => {
     });
 
     ipcMain.handle('openKeyboard', () => {
-        if (!keyboardWindow) {
-            keyboardWindow = createKeyboardWindow();
+        const keyboardOpen = getKeyboardOpen();
+
+        if (keyboardOpen) {
+            keyboardWindow?.close();
+            keyboardWindow = null;
         } else {
-            keyboardWindow.show();
+            if (!keyboardWindow) {
+                keyboardWindow = createKeyboardWindow();
+            } else {
+                keyboardWindow.show();
+            }
         }
+
+        Store.set('keyboardOpen', !keyboardOpen);
+    });
+
+    ipcMain.handle('openLog', () => {
+        if (!logWindow) {
+            logWindow = createLogWindow();
+        } else {
+            logWindow.show();
+        }
+    });
+
+    ipcMain.handle('swipeScreen', (_, direction: 'left' | 'right') => {
+        swipeScreen(direction);
     });
 
     createBackgroundWindow();

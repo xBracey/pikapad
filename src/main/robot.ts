@@ -1,10 +1,20 @@
-import { mouse, keyboard, Button } from '@nut-tree-fork/nut-js';
+import { mouse, keyboard } from 'macpad-nut-js';
 import { Store } from './storage';
+import { Button, Key } from 'macpad-shared';
 
-const getToggle = () => Store.get('toggle') ?? false;
+keyboard.config.autoDelayMs = 0;
+
+const getKeyboardOpen = () => Store.get('keyboardOpen') ?? false;
+
+const disableKeys = () => {
+    const isEnabled = Store.get('toggle') ?? false;
+    const isKeyboardOpen = getKeyboardOpen();
+
+    return !isEnabled || isKeyboardOpen;
+};
 
 export const moveMouse = async (x: number, y: number, speed: number = 1) => {
-    if (!getToggle()) return;
+    if (disableKeys()) return;
 
     const mousePos = await mouse.getPosition();
 
@@ -15,21 +25,35 @@ export const moveMouse = async (x: number, y: number, speed: number = 1) => {
 };
 
 export const leftClick = () => {
-    if (!getToggle()) return;
+    if (disableKeys()) return;
 
     mouse.click(Button.LEFT);
 };
 
 export const rightClick = () => {
-    if (!getToggle()) return;
+    if (disableKeys()) return;
 
     mouse.click(Button.RIGHT);
 };
 
-export const keyPress = (key: string) => {
-    console.log(key);
+export const keyPress = (key: string, fromKeyboard: boolean = false) => {
+    if (disableKeys() && !fromKeyboard) return;
 
-    if (!getToggle()) return;
+    keyboard.type(specialKeysMap[key] ?? key);
+};
 
-    keyboard.type(key);
+export const swipeScreen = async (direction: 'left' | 'right') => {
+    if (disableKeys()) return;
+
+    keyboard.moveSpace(direction === 'left');
+};
+
+const specialKeysMap = {
+    '{bksp}': Key.Backspace,
+    '{shift}': Key.LeftShift,
+    '{tab}': Key.Tab,
+    '{enter}': Key.Enter,
+    '{lock}': Key.CapsLock,
+    '{esc}': Key.Escape,
+    '{space}': Key.Space
 };

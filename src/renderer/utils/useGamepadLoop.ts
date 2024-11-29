@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export const useGamepadLoop = (gameLoop: (connectedGamepad: Gamepad) => void) => {
+export const useGamepadLoop = (gameLoop: (connectedGamepad: Gamepad) => void, fps: number = 60) => {
     const [connectedGamepad, setConnectedGamepad] = useState<Gamepad | null>(null);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export const useGamepadLoop = (gameLoop: (connectedGamepad: Gamepad) => void) =>
     useEffect(() => {
         const interval = setInterval(() => {
             gameLoopBase(connectedGamepad);
-        }, 1000 / 60);
+        }, 1000 / fps);
 
         return () => clearInterval(interval);
     }, [gameLoop, connectedGamepad]);
