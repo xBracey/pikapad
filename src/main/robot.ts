@@ -1,6 +1,5 @@
-import { mouse, keyboard } from 'macpad-nut-js';
+import { mouse, keyboard, Button, Key } from 'macpad-nut-js';
 import { Store } from './storage';
-import { Button, Key } from 'macpad-shared';
 
 keyboard.config.autoDelayMs = 0;
 

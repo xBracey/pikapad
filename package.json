@@ -22,8 +22,7 @@
     "dependencies": {
         "@electron-toolkit/preload": "^3.0.1",
         "@electron-toolkit/utils": "^3.0.0",
-        "@nut-tree-fork/nut-js": "^4.2.2",
-        "macpad-libnut": "4.2.3",
+        "macpad-nut-js": "4.2.3",
         "electron-store": "8.2.0",
         "electron-updater": "^6.1.7",
         "menubar": "^9.5.1",
