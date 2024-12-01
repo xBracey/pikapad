@@ -21,6 +21,8 @@ interface Dimensions {
     height: number;
 }
 
+const DIRECTION_THRESHOLD = 300;
+
 const dimensionsToStyle = (dimensions: Dimensions) =>
     dimensions
         ? {
@@ -36,6 +38,8 @@ export const App = (): JSX.Element => {
     const keyboardRef = useRef<KeyboardReactInterface | null>(null);
     const lastButtonClicked = useRef<string | null>(null);
     const [noNameKeyDimensions, setNoNameKeyDimensions] = useState<Record<string, Dimensions>>({});
+    const xDirectionAmount = useRef(0);
+    const yDirectionAmount = useRef(0);
 
     const onExtraButtonPress = (buttonId: string) => () => {
         const keys = getAllKeys();
@@ -74,7 +78,7 @@ export const App = (): JSX.Element => {
         3: onExtraButtonPress('r4b2')
     });
 
-    const onGamepadAxis = useAxis(buttonsDown);
+    const onGamepadAxis = useAxis(buttonsDown, 0.4);
 
     const gameLoop = useCallback(
         (gamepad: Gamepad) => {
@@ -82,7 +86,27 @@ export const App = (): JSX.Element => {
 
             const { xMove, yMove } = onGamepadAxis(gamepad);
 
-            if (!xMove && !yMove) return;
+            if (!xMove && !yMove) {
+                xDirectionAmount.current = 0;
+                yDirectionAmount.current = 0;
+            }
+
+            xDirectionAmount.current += xMove;
+            yDirectionAmount.current += yMove;
+
+            if (xDirectionAmount.current > DIRECTION_THRESHOLD) {
+                onDPadPress('right')();
+                xDirectionAmount.current = 0;
+            } else if (xDirectionAmount.current < -DIRECTION_THRESHOLD) {
+                onDPadPress('left')();
+                xDirectionAmount.current = 0;
+            } else if (yDirectionAmount.current > DIRECTION_THRESHOLD) {
+                onDPadPress('down')();
+                yDirectionAmount.current = 0;
+            } else if (yDirectionAmount.current < -DIRECTION_THRESHOLD) {
+                onDPadPress('up')();
+                yDirectionAmount.current = 0;
+            }
         },
         [gamepadPressLoop, buttonsDown]
     );

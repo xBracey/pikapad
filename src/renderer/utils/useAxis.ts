@@ -9,11 +9,11 @@ const calculateMove = (axis: number) => {
     return isNegative ? -move : move;
 };
 
-export const useAxis = (buttonsDown: number[]) => {
+export const useAxis = (buttonsDown: number[], buttonMultiplier = 0.3) => {
     const onGamepadAxis = useCallback(
         (gamepad: Gamepad) => {
-            const dPadXAxis = (+buttonsDown.includes(15) - +buttonsDown.includes(14)) * 0.3;
-            const dPadYAxis = (+buttonsDown.includes(13) - +buttonsDown.includes(12)) * 0.3;
+            const dPadXAxis = (+buttonsDown.includes(15) - +buttonsDown.includes(14)) * buttonMultiplier;
+            const dPadYAxis = (+buttonsDown.includes(13) - +buttonsDown.includes(12)) * buttonMultiplier;
 
             const xAxis = gamepad.axes[0] + dPadXAxis;
             const yAxis = gamepad.axes[1] + dPadYAxis;
