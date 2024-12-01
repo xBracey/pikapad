@@ -50,7 +50,7 @@ app.whenReady().then(() => {
         Store.set('toggle', toggle);
     });
 
-    ipcMain.handle('openKeyboard', () => {
+    ipcMain.handle('openKeyboard', async () => {
         const keyboardOpen = getKeyboardOpen();
 
         if (keyboardOpen) {
@@ -58,7 +58,7 @@ app.whenReady().then(() => {
             keyboardWindow = null;
         } else {
             if (!keyboardWindow) {
-                keyboardWindow = createKeyboardWindow();
+                keyboardWindow = await createKeyboardWindow();
             } else {
                 keyboardWindow.show();
             }
@@ -77,6 +77,10 @@ app.whenReady().then(() => {
 
     ipcMain.handle('swipeScreen', (_, direction: 'left' | 'right') => {
         swipeScreen(direction);
+    });
+
+    ipcMain.handle('log', (_, message: string) => {
+        console.log(message);
     });
 
     createBackgroundWindow();

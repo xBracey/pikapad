@@ -2,3 +2,7 @@
     outline: none;
     background-color: #ccc !important;
 }
+
+.hg-button.no-name {
+    color: transparent;
+}

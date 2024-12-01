@@ -1,8 +1,11 @@
 import { BrowserWindow } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import { join } from 'path';
+import { mouse } from 'macpad-nut-js';
 
-export const createKeyboardWindow = (): BrowserWindow => {
+export const createKeyboardWindow = async (): Promise<BrowserWindow> => {
+    const mousePos = await mouse.getPosition();
+
     // Create the browser window.
     const keyboardWindow = new BrowserWindow({
         width: 500,
@@ -14,7 +17,10 @@ export const createKeyboardWindow = (): BrowserWindow => {
             sandbox: false
         },
         frame: false,
-        resizable: false
+        resizable: false,
+        alwaysOnTop: true,
+        x: mousePos.x - 250,
+        y: mousePos.y + 10
     });
 
     keyboardWindow.on('ready-to-show', () => {

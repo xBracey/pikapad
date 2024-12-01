@@ -1,15 +1,7 @@
 import { useCallback } from 'react';
 import { useGamepadLoop } from '../utils/useGamepadLoop';
 import { useGamepadPress } from '../utils/useGamepadPress';
-
-const calculateMove = (axis: number) => {
-    if (Math.abs(axis) < 0.1) return 0;
-
-    const isNegative = axis < 0;
-    const move = Math.pow(axis * 10, 2);
-
-    return isNegative ? -move : move;
-};
+import { useAxis } from '../utils/useAxis';
 
 function App(): JSX.Element {
     const leftClick = () => {
@@ -25,23 +17,28 @@ function App(): JSX.Element {
         window.electron.ipcRenderer.invoke('swipeScreen', direction);
     };
 
-    const { gamepadPressLoop } = useGamepadPress({
+    const { gamepadPressLoop, buttonsDown } = useGamepadPress({
         4: swipeScreen('left'),
         5: swipeScreen('right'),
         17: keyboardOpen,
         0: leftClick
     });
 
-    const gameLoop = useCallback((gamepad: Gamepad) => {
-        gamepadPressLoop(gamepad);
+    const onGamepadAxis = useAxis(buttonsDown);
 
-        const xMove = calculateMove(gamepad.axes[0]);
-        const yMove = calculateMove(gamepad.axes[1]);
+    const gameLoop = useCallback(
+        (gamepad: Gamepad) => {
+            gamepadPressLoop(gamepad);
+            const { xMove, yMove } = onGamepadAxis(gamepad);
 
-        if (!xMove && !yMove) return;
+            gamepad.mapping;
 
-        window.electron.ipcRenderer.invoke('moveMouse', xMove, yMove, 0.25);
-    }, []);
+            if (!xMove && !yMove) return;
+
+            window.electron.ipcRenderer.invoke('moveMouse', xMove, yMove, 0.25);
+        },
+        [gamepadPressLoop, buttonsDown]
+    );
 
     useGamepadLoop(gameLoop, 120);
 
