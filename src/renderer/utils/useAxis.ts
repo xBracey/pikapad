@@ -14,9 +14,10 @@ export const useAxis = (buttonsDown: number[], buttonMultiplier = 0.3, leftOrRig
         (gamepad: Gamepad) => {
             const dPadXAxis = (+buttonsDown.includes(15) - +buttonsDown.includes(14)) * buttonMultiplier;
             const dPadYAxis = (+buttonsDown.includes(13) - +buttonsDown.includes(12)) * buttonMultiplier;
+            const isLeftStick = leftOrRightStick === 'left';
 
-            const xAxis = gamepad.axes[leftOrRightStick === 'left' ? 0 : 2] + dPadXAxis;
-            const yAxis = gamepad.axes[leftOrRightStick === 'left' ? 1 : 3] + dPadYAxis;
+            const xAxis = gamepad.axes[isLeftStick ? 0 : 2] + (isLeftStick ? dPadXAxis : 0);
+            const yAxis = gamepad.axes[isLeftStick ? 1 : 3] + (isLeftStick ? dPadYAxis : 0);
 
             const xMove = calculateMove(xAxis);
             const yMove = calculateMove(yAxis);

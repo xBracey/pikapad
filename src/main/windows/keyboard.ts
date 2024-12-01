@@ -20,7 +20,7 @@ export const createKeyboardWindow = async (): Promise<BrowserWindow> => {
         resizable: false,
         alwaysOnTop: true,
         x: mousePos.x - 250,
-        y: mousePos.y + 10
+        y: mousePos.y + 30
     });
 
     keyboardWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });

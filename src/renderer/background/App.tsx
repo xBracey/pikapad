@@ -21,7 +21,12 @@ function App(): JSX.Element {
         window.electron.ipcRenderer.invoke('swipeScreen', direction);
     };
 
+    const pressButton = (key: string) => () => {
+        window.electron.ipcRenderer.invoke('keyPress', key);
+    };
+
     const { gamepadPressLoop, buttonsDown } = useGamepadPress({
+        1: pressButton('{escape}'),
         2: rightClick,
         4: swipeScreen('left'),
         5: swipeScreen('right'),
@@ -29,8 +34,8 @@ function App(): JSX.Element {
         0: leftClick
     });
 
-    const onGamepadAxis = useAxis(buttonsDown);
-    const onGamepadAxisRight = useAxis(buttonsDown, 0.3, 'right');
+    const onGamepadAxis = useAxis(buttonsDown, 0.5);
+    const onGamepadAxisRight = useAxis(buttonsDown, 0.5, 'right');
 
     const gameLoop = useCallback(
         (gamepad: Gamepad) => {
@@ -39,11 +44,11 @@ function App(): JSX.Element {
             const { xMove: xMoveRight, yMove: yMoveRight } = onGamepadAxisRight(gamepad);
 
             if (xMove || yMove) {
-                window.electron.ipcRenderer.invoke('moveMouse', xMove, yMove, 0.25);
+                window.electron.ipcRenderer.invoke('moveMouse', xMove, yMove, 0.1);
             }
 
             if (xMoveRight || yMoveRight) {
-                window.electron.ipcRenderer.invoke('scrollMouse', xMoveRight, yMoveRight, 0.25);
+                window.electron.ipcRenderer.invoke('scrollMouse', xMoveRight, yMoveRight, 0.1);
             }
         },
         [gamepadPressLoop, buttonsDown]

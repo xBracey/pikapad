@@ -11,9 +11,9 @@ export const keyboardUpMap: Record<string, string> = {
     r0b8: 'r4b2',
     r0b9: 'r4b2',
     r0b10: 'r4b2',
-    r0b11: 'r4b2',
-    r0b12: 'r4b2',
-    r0b13: 'r4b2',
+    r0b11: 'r4b3',
+    r0b12: 'r4b4',
+    r0b13: 'r4b4',
     // Row 2
     r1b0: 'r0b0',
     r1b1: 'r0b1',
@@ -59,7 +59,9 @@ export const keyboardUpMap: Record<string, string> = {
     // Row 5
     r4b0: 'r3b0',
     r4b1: 'r3b2',
-    r4b2: 'r3b6'
+    r4b2: 'r3b5',
+    r4b3: 'r3b9',
+    r4b4: 'r3b11'
 };
 
 export const keyboardDownMap: Record<string, string> = {
@@ -116,12 +118,14 @@ export const keyboardDownMap: Record<string, string> = {
     r3b5: 'r4b2',
     r3b6: 'r4b2',
     r3b7: 'r4b2',
-    r3b8: 'r4b2',
-    r3b9: 'r4b2',
-    r3b10: 'r4b2',
-    r3b11: 'r4b2',
+    r3b8: 'r4b3',
+    r3b9: 'r4b3',
+    r3b10: 'r4b4',
+    r3b11: 'r4b4',
     // Row 5
     r4b0: 'r0b0',
     r4b1: 'r0b3',
-    r4b2: 'r0b13'
+    r4b2: 'r0b7',
+    r4b3: 'r0b12',
+    r4b4: 'r0b13'
 };

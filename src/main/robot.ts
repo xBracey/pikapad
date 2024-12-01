@@ -67,5 +67,8 @@ const specialKeysMap = {
     '{enter}': Key.Enter,
     '{lock}': Key.CapsLock,
     '{esc}': Key.Escape,
-    '{space}': Key.Space
+    '{space}': Key.Space,
+    '{arrowright}': Key.Right,
+    '{arrowleft}': Key.Left,
+    '{escape}': Key.Escape
 };
