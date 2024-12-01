@@ -9,6 +9,16 @@ export default defineConfig({
         plugins: [externalizeDepsPlugin()]
     },
     renderer: {
-        plugins: [react()]
+        plugins: [react()],
+        build: {
+            rollupOptions: {
+                input: {
+                    background: './src/renderer/background.html',
+                    menubar: './src/renderer/menubar.html',
+                    keyboard: './src/renderer/keyboard.html',
+                    logger: './src/renderer/logger.html'
+                }
+            }
+        }
     }
 });

@@ -1,6 +1,7 @@
 import { is } from '@electron-toolkit/utils';
 import { menubar } from 'menubar';
 import { join } from 'path';
+import gamepad from '../../../resources/gamepad.png?asset';
 
 menubar({
     browserWindow: {
@@ -18,6 +19,6 @@ menubar({
     index:
         is.dev && process.env['ELECTRON_RENDERER_URL']
             ? `${process.env['ELECTRON_RENDERER_URL']}/menubar.html`
-            : join(__dirname, '../renderer/menubar.html'),
-    icon: './resources/gamepad.png'
+            : `file://${join(__dirname, '../renderer/menubar.html')}`,
+    icon: gamepad
 });

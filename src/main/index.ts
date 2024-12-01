@@ -83,6 +83,10 @@ app.whenReady().then(() => {
         console.log(message);
     });
 
+    ipcMain.handle('closeApp', () => {
+        app.quit();
+    });
+
     createBackgroundWindow();
 
     app.on('activate', function () {

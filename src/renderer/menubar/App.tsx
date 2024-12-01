@@ -19,7 +19,15 @@ function App(): JSX.Element {
         <div className="h-screen w-screen flex flex-col gap-4 items-center justify-center">
             <Toggle label={isActive ? 'Turn Off' : 'Turn On'} onChange={handleToggle} defaultChecked={isActive} />
 
-            <button onClick={() => window.electron.ipcRenderer.invoke('openLog')}>Open Log</button>
+            <div className="flex gap-2 text-sm">
+                <button className="bg-blue-500 text-white p-2 px-4 rounded" onClick={() => window.electron.ipcRenderer.invoke('openLog')}>
+                    Open Log
+                </button>
+
+                <button className="bg-blue-500 text-white p-2 px-4 rounded" onClick={() => window.electron.ipcRenderer.invoke('closeApp')}>
+                    Close App
+                </button>
+            </div>
         </div>
     );
 }

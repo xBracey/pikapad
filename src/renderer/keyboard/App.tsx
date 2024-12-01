@@ -11,8 +11,8 @@ import { Backspace, CapsLock, Enter, Shift, Space, Tab } from '../components/Ico
 import { XboxButton } from '../components/XboxButton';
 import { keysWithNoName } from './utils/keysWithNoName';
 import { KeyboardButton } from '../components/KeyboardButton';
-import ltButton from '../assets/lt.png';
-import rtButton from '../assets/rt.png';
+import ltButton from '../public/lt.png';
+import rtButton from '../public/rt.png';
 
 interface Dimensions {
     x: number;
