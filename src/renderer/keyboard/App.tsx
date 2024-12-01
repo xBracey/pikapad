@@ -6,13 +6,15 @@ import { useGamepadPress } from '../utils/useGamepadPress';
 import { useAxis } from '../utils/useAxis';
 import { getAllKeys, onAPress, onDPadPress } from './utils/onPress';
 import { useActivateKeyboard } from './utils/useActivateKeyboard';
-import keyNavigation from 'simple-keyboard-key-navigation';
-import { Backspace, CapsLock, Enter, Shift, Space, Tab } from '../components/Icons';
+import { ArrowLeft, ArrowRight, Backspace, CapsLock, Enter, Shift, Space, Tab } from '../components/Icons';
 import { XboxButton } from '../components/XboxButton';
 import { keysWithNoName } from './utils/keysWithNoName';
 import { KeyboardButton } from '../components/KeyboardButton';
 import ltButton from '../public/lt.png';
 import rtButton from '../public/rt.png';
+import lbButton from '../public/lb.png';
+import rbButton from '../public/rb.png';
+import fullLayout from './utils/layout';
 
 interface Dimensions {
     x: number;
@@ -75,7 +77,9 @@ export const App = (): JSX.Element => {
         6: onExtraButtonPress('r2b0'),
         2: onExtraButtonPress('r2b12'),
         7: onExtraButtonPress('r3b11'),
-        3: onExtraButtonPress('r4b2')
+        3: onExtraButtonPress('r4b2'),
+        4: onExtraButtonPress('r4b3'),
+        5: onExtraButtonPress('r4b4')
     });
 
     const onGamepadAxis = useAxis(buttonsDown, 0.4);
@@ -138,12 +142,7 @@ export const App = (): JSX.Element => {
 
     return (
         <div className="relative overflow-hidden">
-            <Keyboard
-                onKeyPress={onKeyPress}
-                keyboardRef={(r) => (keyboardRef.current = r)}
-                layoutName={layout}
-                modules={[keyNavigation]}
-            />
+            <Keyboard onKeyPress={onKeyPress} keyboardRef={(r) => (keyboardRef.current = r)} layoutName={layout} layout={fullLayout} />
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r0b13'])}>
                 <Backspace className="w-6 h-6" />
                 <XboxButton letter="B" />
@@ -169,6 +168,14 @@ export const App = (): JSX.Element => {
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r4b2'])}>
                 <Space className="w-4 h-4" />
                 <XboxButton letter="Y" />
+            </KeyboardButton>
+            <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r4b3'])}>
+                <ArrowLeft className="w-4 h-4" />
+                <img src={lbButton} alt="LB" className="w-6" />
+            </KeyboardButton>
+            <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r4b4'])}>
+                <ArrowRight className="w-4 h-4" />
+                <img src={rbButton} alt="RB" className="w-6" />
             </KeyboardButton>
         </div>
     );

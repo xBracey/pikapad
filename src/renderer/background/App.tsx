@@ -8,6 +8,10 @@ function App(): JSX.Element {
         window.electron.ipcRenderer.invoke('leftClick');
     };
 
+    const rightClick = () => {
+        window.electron.ipcRenderer.invoke('rightClick');
+    };
+
     const keyboardOpen = () => {
         window.electron.ipcRenderer.invoke('openKeyboard');
     };
@@ -18,24 +22,29 @@ function App(): JSX.Element {
     };
 
     const { gamepadPressLoop, buttonsDown } = useGamepadPress({
+        2: rightClick,
         4: swipeScreen('left'),
         5: swipeScreen('right'),
-        17: keyboardOpen,
+        9: keyboardOpen,
         0: leftClick
     });
 
     const onGamepadAxis = useAxis(buttonsDown);
+    const onGamepadAxisRight = useAxis(buttonsDown, 0.3, 'right');
 
     const gameLoop = useCallback(
         (gamepad: Gamepad) => {
             gamepadPressLoop(gamepad);
             const { xMove, yMove } = onGamepadAxis(gamepad);
+            const { xMove: xMoveRight, yMove: yMoveRight } = onGamepadAxisRight(gamepad);
 
-            gamepad.mapping;
+            if (xMove || yMove) {
+                window.electron.ipcRenderer.invoke('moveMouse', xMove, yMove, 0.25);
+            }
 
-            if (!xMove && !yMove) return;
-
-            window.electron.ipcRenderer.invoke('moveMouse', xMove, yMove, 0.25);
+            if (xMoveRight || yMoveRight) {
+                window.electron.ipcRenderer.invoke('scrollMouse', xMoveRight, yMoveRight, 0.25);
+            }
         },
         [gamepadPressLoop, buttonsDown]
     );

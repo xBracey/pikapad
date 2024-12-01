@@ -63,3 +63,25 @@ export const CapsLock = ({ className }: { className: string }) => {
         </svg>
     );
 };
+
+export const ArrowLeft = ({ className }: { className: string }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className={className}>
+            <path
+                fill="currentColor"
+                d="M8.73 16.795a.75.75 0 0 0 1.031-1.09L4.522 10.75h12.724a.75.75 0 0 0 0-1.5H4.52l5.241-4.957a.75.75 0 1 0-1.03-1.09l-6.417 6.07a1 1 0 0 0-.3.566a.75.75 0 0 0 0 .329a1 1 0 0 0 .3.558z"
+            />
+        </svg>
+    );
+};
+
+export const ArrowRight = ({ className }: { className: string }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className={className}>
+            <path
+                fill="currentColor"
+                d="M11.265 3.205a.75.75 0 0 0-1.03 1.09l5.239 4.955H2.75a.75.75 0 0 0 0 1.5h12.726l-5.241 4.957a.75.75 0 1 0 1.03 1.09l6.418-6.07a1 1 0 0 0 .3-.566a.75.75 0 0 0-.002-.329a1 1 0 0 0-.298-.557z"
+            />
+        </svg>
+    );
+};

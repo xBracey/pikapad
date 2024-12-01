@@ -1,4 +1,4 @@
-import { mouse, keyboard, Button, Key } from 'macpad-nut-js';
+import { mouse, keyboard, Button, Key, screen } from 'macpad-nut-js';
 import { Store } from './storage';
 
 keyboard.config.autoDelayMs = 0;
@@ -15,12 +15,25 @@ const disableKeys = () => {
 export const moveMouse = async (x: number, y: number, speed: number = 1) => {
     if (disableKeys()) return;
 
+    const screenWidth = await screen.width();
+    const screenHeight = await screen.height();
+
     const mousePos = await mouse.getPosition();
 
     const newX = mousePos.x + x * speed;
     const newY = mousePos.y + y * speed;
 
-    await mouse.move([{ x: newX, y: newY }]);
+    const clampedX = Math.max(0, Math.min(newX, screenWidth));
+    const clampedY = Math.max(0, Math.min(newY, screenHeight));
+
+    await mouse.move([{ x: clampedX, y: clampedY }]);
+};
+
+export const scrollMouse = async (x: number, y: number, speed: number = 0.5) => {
+    if (disableKeys()) return;
+
+    await mouse.scrollDown(y * speed);
+    await mouse.scrollRight(x * speed);
 };
 
 export const leftClick = () => {

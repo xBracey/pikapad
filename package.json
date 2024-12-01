@@ -21,12 +21,12 @@
     "dependencies": {
         "@electron-toolkit/preload": "^3.0.1",
         "@electron-toolkit/utils": "^3.0.0",
+        "electron-context-menu": "^4.0.4",
         "electron-store": "8.2.0",
         "electron-updater": "^6.1.7",
         "macpad-nut-js": "4.2.3",
         "menubar": "^9.5.1",
-        "react-simple-keyboard": "^3.8.23",
-        "simple-keyboard-key-navigation": "^2.4.246"
+        "react-simple-keyboard": "^3.8.23"
     },
     "devDependencies": {
         "@electron-toolkit/tsconfig": "^1.0.1",

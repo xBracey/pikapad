@@ -1,11 +1,11 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
-import { moveMouse, leftClick, rightClick, keyPress, swipeScreen } from './robot';
+import { moveMouse, leftClick, rightClick, keyPress, swipeScreen, scrollMouse } from './robot';
 import { Store } from './storage';
 import { createBackgroundWindow } from './windows/background';
-import './windows/menubar';
 import { createKeyboardWindow } from './windows/keyboard';
 import { createLogWindow } from './windows/log';
+import gamepad from '../../resources/IconTemplate.png?asset';
 
 const getKeyboardOpen = () => Store.get('keyboardOpen') ?? false;
 
@@ -50,7 +50,7 @@ app.whenReady().then(() => {
         Store.set('toggle', toggle);
     });
 
-    ipcMain.handle('openKeyboard', async () => {
+    const openKeyboard = async () => {
         const keyboardOpen = getKeyboardOpen();
 
         if (keyboardOpen) {
@@ -65,15 +65,19 @@ app.whenReady().then(() => {
         }
 
         Store.set('keyboardOpen', !keyboardOpen);
-    });
+    };
 
-    ipcMain.handle('openLog', () => {
+    ipcMain.handle('openKeyboard', openKeyboard);
+
+    const openLog = () => {
         if (!logWindow) {
             logWindow = createLogWindow();
         } else {
             logWindow.show();
         }
-    });
+    };
+
+    ipcMain.handle('openLog', openLog);
 
     ipcMain.handle('swipeScreen', (_, direction: 'left' | 'right') => {
         swipeScreen(direction);
@@ -87,13 +91,21 @@ app.whenReady().then(() => {
         app.quit();
     });
 
+    ipcMain.handle('scrollMouse', (_, x: number, y: number, speed: number = 1) => {
+        scrollMouse(x, y, speed);
+    });
+
     createBackgroundWindow();
 
-    app.on('activate', function () {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
-        if (BrowserWindow.getAllWindows().length === 0) createBackgroundWindow();
-    });
+    const tray = new Tray(gamepad);
+    const contextMenu = Menu.buildFromTemplate([
+        { label: 'Toggle On', click: () => Store.set('toggle', true) },
+        { label: 'Toggle Off', click: () => Store.set('toggle', false) },
+        { label: 'Open Keyboard', click: openKeyboard },
+        { label: 'Close App', click: () => app.quit() },
+        { label: 'Open Logger', click: openLog }
+    ]);
+    tray.setContextMenu(contextMenu);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
