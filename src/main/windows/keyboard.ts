@@ -23,6 +23,9 @@ export const createKeyboardWindow = async (): Promise<BrowserWindow> => {
         y: mousePos.y + 10
     });
 
+    keyboardWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    keyboardWindow.setAlwaysOnTop(true, 'screen-saver', 1);
+
     keyboardWindow.on('ready-to-show', () => {
         keyboardWindow.showInactive();
     });
