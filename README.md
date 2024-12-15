@@ -2,7 +2,7 @@
 
 Transform your gamepad into a powerful Mac OS control tool. Navigate, click, and type with ease using your favorite controller.
 
-![Pikapad Banner](path/to/banner-image.png)
+![Pikapad Banner](build/icon.png)
 
 ## 🌟 Features
 
