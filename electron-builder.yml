@@ -1,5 +1,5 @@
-appId: com.xbracey.macpad
-productName: MacPad
+appId: com.xbracey.pikapad
+productName: Pikapad
 directories:
     buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
     - resources/**
 win:
-    executableName: MacPad
+    executableName: Pikapad
 nsis:
     artifactName: ${name}-${version}-setup.${ext}
     shortcutName: ${productName}

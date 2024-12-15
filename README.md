@@ -1,34 +1,75 @@
-# electron-app
+# Pikapad 🎮➡️💻
 
-An Electron application with React and TypeScript
+Transform your gamepad into a powerful Mac OS control tool. Navigate, click, and type with ease using your favorite controller.
 
-## Recommended IDE Setup
+![Pikapad Banner](path/to/banner-image.png)
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## 🌟 Features
 
-## Project Setup
+- **Analog Mouse Control**: Use your gamepad's analog stick to smoothly move the mouse cursor across your Mac's screen.
+- **Button Mapping (Coming Soon)**: Map gamepad buttons to mouse clicks, making navigation intuitive and effortless.
+- **Built-in Keyboard**: Quickly bring up an on-screen keyboard with a single button press.
 
-### Install
+## 📸 Screenshots
+
+![Pikapad Screenshot](path/to/screenshot.png)
+
+## 🚀 Installation
+
+### Prerequisites
+
+- Node.js
+- Electron
+
+### Local Setup
+
+<!-- Provide step-by-step instructions for setting up the project locally -->
 
 ```bash
-$ npm install
+# Example clone command
+git clone https://github.com/yourusername/pikapad.git
+
+# Navigate to project directory
+cd pikapad
+
+# Install dependencies
+# Add your specific installation commands here
+npm i
+npm run dev
 ```
 
-### Development
+## 🛠️ Building the Project
+
+### Build Instructions
+
+<!-- Detailed instructions on how to build the project from source -->
 
 ```bash
-$ npm run dev
+# Example build commands
+# Add your specific build process here
+npm run build:mac
 ```
 
-### Build
+## 💻 Usage
 
-```bash
-# For windows
-$ npm run build:win
+<!-- Provide basic usage instructions -->
 
-# For macOS
-$ npm run build:mac
+1. Connect your gamepad
+2. Launch Pikapad
+3. Start controlling your Mac with your gamepad!
 
-# For Linux
-$ npm run build:linux
-```
+## 💖 Support the Project
+
+If you find Pikapad useful, consider supporting its development:
+
+- Star the GitHub repository
+- [Donate via Ko-fi](https://ko-fi.com/xbracey)
+- Spread the word!
+
+## 📄 License
+
+MIT License
+
+---
+
+**Disclaimer**: Pikapad is an open-source project and is not officially affiliated with Apple or Mac OS.

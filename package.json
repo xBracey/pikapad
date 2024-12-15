@@ -1,5 +1,5 @@
 {
-    "name": "macpad",
+    "name": "pikapad",
     "version": "1.0.0",
     "description": "An Electron application with React and TypeScript",
     "main": "./out/main/index.js",
@@ -16,7 +16,8 @@
         "build": "npm run typecheck && electron-vite build",
         "postinstall": "electron-builder install-app-deps",
         "build:mac": "electron-vite build && electron-builder --mac ",
-        "prettier": "prettier --write ."
+        "prettier": "prettier --write .",
+        "create-icons": "electron-icon-builder --input ./build/icon.png --output ./build"
     },
     "dependencies": {
         "@electron-toolkit/preload": "^3.0.1",

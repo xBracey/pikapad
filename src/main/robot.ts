@@ -32,8 +32,17 @@ export const moveMouse = async (x: number, y: number, speed: number = 1) => {
 export const scrollMouse = async (x: number, y: number, speed: number = 0.5) => {
     if (disableKeys()) return;
 
-    await mouse.scrollDown(y * speed);
-    await mouse.scrollRight(x * speed);
+    if (y > 0) {
+        await mouse.scrollDown(Math.abs(y) * speed);
+    } else if (y < 0) {
+        await mouse.scrollUp(Math.abs(y) * speed);
+    }
+
+    if (x > 0) {
+        await mouse.scrollRight(Math.abs(x) * speed);
+    } else if (x < 0) {
+        await mouse.scrollLeft(Math.abs(x) * speed);
+    }
 };
 
 export const leftClick = () => {
