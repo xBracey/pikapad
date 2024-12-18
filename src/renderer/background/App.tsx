@@ -1,44 +1,32 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useGamepadLoop } from '../utils/useGamepadLoop';
 import { useGamepadPress } from '../utils/useGamepadPress';
 import { useAxis } from '../utils/useAxis';
+import { getControllerType } from '../keyboard/utils/getControllerType';
 
 function App(): JSX.Element {
-    const leftClick = () => {
-        window.electron.ipcRenderer.invoke('leftClick');
-    };
+    const [controllerType, setControllerType] = useState<string | null>(null);
+    const { gamepadPressLoop, buttonsDown } = useGamepadPress({});
 
-    const rightClick = () => {
-        window.electron.ipcRenderer.invoke('rightClick');
-    };
+    useEffect(() => {
+        window.electron.ipcRenderer.invoke('setButtonsDown', buttonsDown);
+    }, [buttonsDown]);
 
-    const keyboardOpen = () => {
-        window.electron.ipcRenderer.invoke('openKeyboard');
-    };
-
-    const swipeScreen = (direction: 'left' | 'right') => () => {
-        console.log('swipeScreen', direction);
-        window.electron.ipcRenderer.invoke('swipeScreen', direction);
-    };
-
-    const pressButton = (key: string) => () => {
-        window.electron.ipcRenderer.invoke('keyPress', key);
-    };
-
-    const { gamepadPressLoop, buttonsDown } = useGamepadPress({
-        1: pressButton('{escape}'),
-        2: rightClick,
-        4: swipeScreen('left'),
-        5: swipeScreen('right'),
-        9: keyboardOpen,
-        0: leftClick
-    });
+    useEffect(() => {
+        window.electron.ipcRenderer.invoke('setControllerType', controllerType);
+    }, [controllerType]);
 
     const onGamepadAxis = useAxis(buttonsDown, 0.5);
     const onGamepadAxisRight = useAxis(buttonsDown, 0.5, 'right');
 
     const gameLoop = useCallback(
         (gamepad: Gamepad) => {
+            const newControllerType = getControllerType(gamepad);
+
+            if (newControllerType !== controllerType) {
+                setControllerType(newControllerType);
+            }
+
             gamepadPressLoop(gamepad);
             const { xMove, yMove } = onGamepadAxis(gamepad);
             const { xMove: xMoveRight, yMove: yMoveRight } = onGamepadAxisRight(gamepad);
@@ -48,7 +36,7 @@ function App(): JSX.Element {
             }
 
             if (xMoveRight || yMoveRight) {
-                window.electron.ipcRenderer.invoke('scrollMouse', xMoveRight, yMoveRight, 0.1);
+                window.electron.ipcRenderer.invoke('scrollMouse', xMoveRight, yMoveRight, 0.03);
             }
         },
         [gamepadPressLoop, buttonsDown]

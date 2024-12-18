@@ -2,11 +2,11 @@ import { BrowserWindow } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import { join } from 'path';
 
-export const createLogWindow = (): BrowserWindow => {
+export const createSettingsWindow = (): BrowserWindow => {
     // Create the browser window.
-    const logWindow = new BrowserWindow({
-        width: 200,
-        height: 100,
+    const settingsWindow = new BrowserWindow({
+        width: 400,
+        height: 300,
         show: false,
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
@@ -15,17 +15,17 @@ export const createLogWindow = (): BrowserWindow => {
         frame: true
     });
 
-    logWindow.on('ready-to-show', () => {
-        logWindow.show();
+    settingsWindow.on('ready-to-show', () => {
+        settingsWindow.show();
     });
 
     // HMR for renderer base on electron-vite cli.
     // Load the remote URL for development or the local html file for production.
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-        logWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/logger.html`);
+        settingsWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/settings.html`);
     } else {
-        logWindow.loadFile(join(__dirname, '../renderer/logger.html'));
+        settingsWindow.loadFile(join(__dirname, '../renderer/settings.html'));
     }
 
-    return logWindow;
+    return settingsWindow;
 };

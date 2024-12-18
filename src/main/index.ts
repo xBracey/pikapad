@@ -1,17 +1,18 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
-import { moveMouse, leftClick, rightClick, keyPress, swipeScreen, scrollMouse } from './robot';
 import { Store } from './storage';
 import { createBackgroundWindow } from './windows/background';
 import { createKeyboardWindow } from './windows/keyboard';
-import { createLogWindow } from './windows/log';
 import gamepad from '../../resources/IconTemplate.png?asset';
-
+import { Background } from './background';
+import { keyPress, moveMouse, scrollMouse } from './robot';
+import { createSettingsWindow } from './windows/settings';
+import { getButtonMap } from './background/buttonMap';
 const getKeyboardOpen = () => Store.get('keyboardOpen') ?? false;
 
 let keyboardWindow: BrowserWindow | null = null;
-let logWindow: BrowserWindow | null = null;
-
+let settingsWindow: BrowserWindow | null = null;
+let background: Background | null = null;
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -24,30 +25,6 @@ app.whenReady().then(() => {
     // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
     app.on('browser-window-created', (_, window) => {
         optimizer.watchWindowShortcuts(window);
-    });
-
-    ipcMain.handle('moveMouse', (_, x: number, y: number, speed: number) => {
-        moveMouse(x, y, speed);
-    });
-
-    ipcMain.handle('leftClick', () => {
-        leftClick();
-    });
-
-    ipcMain.handle('rightClick', () => {
-        rightClick();
-    });
-
-    ipcMain.handle('keyPress', (_, key: string, fromKeyboard: boolean = false) => {
-        keyPress(key, fromKeyboard);
-    });
-
-    ipcMain.handle('getToggle', () => {
-        return Store.get('toggle');
-    });
-
-    ipcMain.handle('setToggle', (_, toggle: boolean) => {
-        Store.set('toggle', toggle);
     });
 
     const openKeyboard = async () => {
@@ -67,43 +44,64 @@ app.whenReady().then(() => {
         Store.set('keyboardOpen', !keyboardOpen);
     };
 
-    ipcMain.handle('openKeyboard', openKeyboard);
-
-    const openLog = () => {
-        if (!logWindow) {
-            logWindow = createLogWindow();
+    const openSettings = () => {
+        if (!settingsWindow) {
+            settingsWindow = createSettingsWindow();
         } else {
-            logWindow.show();
+            settingsWindow.show();
         }
     };
 
-    ipcMain.handle('openLog', openLog);
+    background = new Background(openKeyboard);
 
-    ipcMain.handle('swipeScreen', (_, direction: 'left' | 'right') => {
-        swipeScreen(direction);
+    ipcMain.handle('moveMouse', (_, x: number, y: number, speed: number) => {
+        moveMouse(x, y, speed);
     });
+
+    ipcMain.handle('scrollMouse', (_, x: number, y: number, speed: number) => {
+        scrollMouse(x, y, speed);
+    });
+
+    ipcMain.handle('openKeyboard', openKeyboard);
 
     ipcMain.handle('log', (_, message: string) => {
         console.log(message);
+    });
+
+    ipcMain.handle('keyPress', (_, key: string, fromKeyboard: boolean = false) => {
+        keyPress(key, fromKeyboard);
     });
 
     ipcMain.handle('closeApp', () => {
         app.quit();
     });
 
-    ipcMain.handle('scrollMouse', (_, x: number, y: number, speed: number = 1) => {
-        scrollMouse(x, y, speed);
+    ipcMain.handle('getToggle', () => {
+        return Store.get('toggle');
+    });
+
+    ipcMain.handle('setToggle', (_, toggle: boolean) => {
+        Store.set('toggle', toggle);
+    });
+
+    ipcMain.handle('setButtonsDown', (_, buttonsDown: number[]) => {
+        background!.setButtonsDown(buttonsDown);
+    });
+
+    ipcMain.handle('setControllerType', (_, controllerType: string) => {
+        Store.set('controllerType', controllerType);
+    });
+
+    ipcMain.handle('getButtonMap', () => {
+        return getButtonMap();
     });
 
     createBackgroundWindow();
 
     const tray = new Tray(gamepad);
     const contextMenu = Menu.buildFromTemplate([
-        { label: 'Toggle On', click: () => Store.set('toggle', true) },
-        { label: 'Toggle Off', click: () => Store.set('toggle', false) },
-        { label: 'Open Keyboard', click: openKeyboard },
-        { label: 'Close App', click: () => app.quit() },
-        { label: 'Open Logger', click: openLog }
+        { label: 'Settings', click: openSettings },
+        { label: 'Close App', click: () => app.quit() }
     ]);
     tray.setContextMenu(contextMenu);
 });
