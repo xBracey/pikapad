@@ -25,18 +25,16 @@ Transform your gamepad into a powerful Mac OS control tool. Navigate, click, and
 
 ### Local Setup
 
-<!-- Provide step-by-step instructions for setting up the project locally -->
-
 ```bash
-# Example clone command
 git clone https://github.com/yourusername/pikapad.git
 
 # Navigate to project directory
 cd pikapad
 
 # Install dependencies
-# Add your specific installation commands here
 npm i
+
+# Run the app
 npm run dev
 ```
 
@@ -44,17 +42,11 @@ npm run dev
 
 ### Build Instructions
 
-<!-- Detailed instructions on how to build the project from source -->
-
 ```bash
-# Example build commands
-# Add your specific build process here
 npm run build:mac
 ```
 
 ## 💻 Usage
-
-<!-- Provide basic usage instructions -->
 
 1. Connect your gamepad
 2. Launch Pikapad
