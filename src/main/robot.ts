@@ -50,16 +50,29 @@ export const scrollMouse = async (x: number, y: number, speed: number = 0.5) => 
     }
 };
 
-export const leftClick = () => {
+export const mouseDown = (button: Button) => () => {
     if (isKeysDisabled()) return;
 
-    mouse.click(Button.LEFT);
+    mouse.pressButton(button);
 };
 
-export const rightClick = () => {
+export const mouseUp = (button: Button) => () => {
     if (isKeysDisabled()) return;
 
-    mouse.click(Button.RIGHT);
+    mouse.releaseButton(button);
+};
+
+export const mouseClick = (button: Button) => () => {
+    if (isKeysDisabled()) return;
+
+    mouse.click(button);
+};
+
+export const mouseDoubleClick = (button: Button) => () => {
+    if (isKeysDisabled()) return;
+
+    mouse.releaseButton(button);
+    mouse.doubleClick(button);
 };
 
 export const keyPress = (key: string, fromKeyboard: boolean = false) => {

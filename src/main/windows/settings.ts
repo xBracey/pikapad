@@ -6,7 +6,7 @@ export const createSettingsWindow = (): BrowserWindow => {
     // Create the browser window.
     const settingsWindow = new BrowserWindow({
         width: 500,
-        height: 450,
+        height: 490,
         show: false,
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
@@ -14,7 +14,8 @@ export const createSettingsWindow = (): BrowserWindow => {
         },
         frame: true,
         title: 'Settings',
-        titleBarStyle: 'hidden'
+        titleBarStyle: 'default',
+        resizable: false
     });
 
     settingsWindow.on('ready-to-show', () => {
