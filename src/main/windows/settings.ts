@@ -5,14 +5,16 @@ import { join } from 'path';
 export const createSettingsWindow = (): BrowserWindow => {
     // Create the browser window.
     const settingsWindow = new BrowserWindow({
-        width: 400,
-        height: 300,
+        width: 500,
+        height: 450,
         show: false,
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
             sandbox: false
         },
-        frame: true
+        frame: true,
+        title: 'Settings',
+        titleBarStyle: 'hidden'
     });
 
     settingsWindow.on('ready-to-show', () => {

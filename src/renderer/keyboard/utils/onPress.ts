@@ -12,6 +12,8 @@ export const onDPadPress = (direction: 'up' | 'down' | 'left' | 'right') => () =
 
     if (activeKey !== -1) {
         keysArray[activeKey].removeAttribute('aria-active');
+    } else {
+        return;
     }
 
     const setVerticalActive = (direction: 'up' | 'down') => {

@@ -5,6 +5,10 @@ import { ButtonActions } from './types';
 
 const frequency = 30;
 
+export const setDisableKeysWithValue = (value: boolean) => {
+    Store.set('toggle', value);
+};
+
 const setDisableKeys = () => {
     Store.set('toggle', !Store.get('toggle'));
 };
@@ -60,10 +64,10 @@ export class Background {
     buttonPress(button: number) {
         const buttonMap = getButtonMap();
 
-        const action = Object.keys(buttonMap).find((key) => {
-            const value = buttonMap[key as keyof typeof buttonMap];
-            if (typeof value === 'number') return value === button;
+        const actionsRelevant = Object.fromEntries(Object.entries(buttonMap).filter(([_, value]) => value.includes(button)));
 
+        const action = Object.keys(actionsRelevant).find((key) => {
+            const value = buttonMap[key as keyof typeof buttonMap];
             return value.every((value) => this.buttonsDown.includes(value));
         });
 

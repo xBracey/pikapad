@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Keyboard, { KeyboardReactInterface } from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 import { useGamepadLoop } from '../utils/useGamepadLoop';
@@ -15,6 +15,8 @@ import rtButton from '../public/rt.png';
 import lbButton from '../public/lb.png';
 import rbButton from '../public/rb.png';
 import fullLayout from './utils/layout';
+import { ButtonMap } from '../shared/buttons';
+import { Buttons } from '../shared/buttons/types';
 
 interface Dimensions {
     x: number;
@@ -42,6 +44,13 @@ export const App = (): JSX.Element => {
     const [noNameKeyDimensions, setNoNameKeyDimensions] = useState<Record<string, Dimensions>>({});
     const xDirectionAmount = useRef(0);
     const yDirectionAmount = useRef(0);
+    const [controllerType, setControllerType] = useState<'xbox' | 'playstation'>('xbox');
+
+    useEffect(() => {
+        window.electron.ipcRenderer.invoke('getControllerType').then(setControllerType);
+    }, []);
+
+    const buttonMapConfig = useMemo(() => ButtonMap[controllerType], [controllerType]);
 
     const onExtraButtonPress = (buttonId: string) => () => {
         const keys = getAllKeys();
@@ -73,9 +82,9 @@ export const App = (): JSX.Element => {
         13: onDPadPress('down'),
         12: onDPadPress('up'),
         0: onAPress(keyboardRef, (button) => (lastButtonClicked.current = button)),
-        1: onExtraButtonPress('r0b13'),
+        1: onExtraButtonPress('r2b12'),
+        2: onExtraButtonPress('r0b13'),
         6: onExtraButtonPress('r2b0'),
-        2: onExtraButtonPress('r2b12'),
         7: onExtraButtonPress('r3b11'),
         3: onExtraButtonPress('r4b2'),
         4: onExtraButtonPress('r4b3'),
@@ -86,6 +95,9 @@ export const App = (): JSX.Element => {
 
     const gameLoop = useCallback(
         (gamepad: Gamepad) => {
+            const keys = getAllKeys();
+            if (!keyboardRef.current || keys.length === 0) return;
+
             gamepadPressLoop(gamepad);
 
             const { xMove, yMove } = onGamepadAxis(gamepad);
@@ -112,7 +124,7 @@ export const App = (): JSX.Element => {
                 yDirectionAmount.current = 0;
             }
         },
-        [gamepadPressLoop, buttonsDown]
+        [gamepadPressLoop, buttonsDown, keyboardRef]
     );
 
     useGamepadLoop(gameLoop);
@@ -145,37 +157,37 @@ export const App = (): JSX.Element => {
             <Keyboard onKeyPress={onKeyPress} keyboardRef={(r) => (keyboardRef.current = r)} layoutName={layout} layout={fullLayout} />
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r0b13'])}>
                 <Backspace className="w-6 h-6" />
-                <XboxButton letter="B" />
+                <img src={buttonMapConfig[Buttons.RIGHT_LEFT]} alt="B" className="w-8 -mx-2" />
             </KeyboardButton>
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r1b0'])}>
                 <Tab className="w-4 h-4" />
             </KeyboardButton>
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r2b0'])}>
                 <CapsLock className="w-4 h-4" />
-                <img src={ltButton} alt="LT" className="w-4" />
+                <img src={buttonMapConfig[Buttons.LEFT_TRIGGER]} alt="LT" className="w-8 -mx-2" style={{ filter: 'invert(1)' }} />
             </KeyboardButton>
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r2b12'])}>
                 <Enter className="w-4 h-4" />
-                <XboxButton letter="X" />
+                <img src={buttonMapConfig[Buttons.RIGHT_RIGHT]} alt="B" className="w-8 -mx-2" />
             </KeyboardButton>
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r3b0'])}>
                 <Shift className="w-4 h-4" />
             </KeyboardButton>
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r3b11'])}>
                 <Shift className="w-4 h-4" />
-                <img src={rtButton} alt="RT" className="w-4" />
+                <img src={buttonMapConfig[Buttons.RIGHT_TRIGGER]} alt="RT" className="w-8 -mx-2" style={{ filter: 'invert(1)' }} />
             </KeyboardButton>
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r4b2'])}>
                 <Space className="w-4 h-4" />
-                <XboxButton letter="Y" />
+                <img src={buttonMapConfig[Buttons.RIGHT_UP]} alt="Y" className="w-8 -mx-2" />
             </KeyboardButton>
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r4b3'])}>
                 <ArrowLeft className="w-4 h-4" />
-                <img src={lbButton} alt="LB" className="w-6" />
+                <img src={buttonMapConfig[Buttons.LEFT_BUMPER]} alt="LB" className="w-8 -mx-2" style={{ filter: 'invert(1)' }} />
             </KeyboardButton>
             <KeyboardButton style={dimensionsToStyle(noNameKeyDimensions['r4b4'])}>
                 <ArrowRight className="w-4 h-4" />
-                <img src={rbButton} alt="RB" className="w-6" />
+                <img src={buttonMapConfig[Buttons.RIGHT_BUMPER]} alt="RB" className="w-8 -mx-2" style={{ filter: 'invert(1)' }} />
             </KeyboardButton>
         </div>
     );

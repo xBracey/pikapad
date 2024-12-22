@@ -4,10 +4,16 @@ import { Store } from './storage';
 import { createBackgroundWindow } from './windows/background';
 import { createKeyboardWindow } from './windows/keyboard';
 import gamepad from '../../resources/IconTemplate.png?asset';
-import { Background } from './background';
+import { Background, setDisableKeysWithValue } from './background';
 import { keyPress, moveMouse, scrollMouse } from './robot';
 import { createSettingsWindow } from './windows/settings';
-import { getButtonMap } from './background/buttonMap';
+import { getButtonMap, setButton } from './background/buttonMap';
+import { setScrollSpeed } from './background/speeds';
+import { getScrollSpeed } from './background/speeds';
+import { setMouseSpeed } from './background/speeds';
+import { ButtonActions } from './background/types';
+import { getMouseSpeed } from './background/speeds';
+
 const getKeyboardOpen = () => Store.get('keyboardOpen') ?? false;
 
 let keyboardWindow: BrowserWindow | null = null;
@@ -45,11 +51,10 @@ app.whenReady().then(() => {
     };
 
     const openSettings = () => {
-        if (!settingsWindow) {
-            settingsWindow = createSettingsWindow();
-        } else {
-            settingsWindow.show();
-        }
+        settingsWindow?.destroy();
+        settingsWindow = null;
+
+        settingsWindow = createSettingsWindow();
     };
 
     background = new Background(openKeyboard);
@@ -88,12 +93,40 @@ app.whenReady().then(() => {
         background!.setButtonsDown(buttonsDown);
     });
 
+    ipcMain.handle('getControllerType', () => {
+        return Store.get('controllerType') ?? 'xbox';
+    });
+
     ipcMain.handle('setControllerType', (_, controllerType: string) => {
         Store.set('controllerType', controllerType);
     });
 
     ipcMain.handle('getButtonMap', () => {
         return getButtonMap();
+    });
+
+    ipcMain.handle('setButton', (_, button: number[], action: ButtonActions) => {
+        setButton(button, action);
+    });
+
+    ipcMain.handle('getMouseSpeed', () => {
+        return getMouseSpeed();
+    });
+
+    ipcMain.handle('setMouseSpeed', (_, mouseSpeed: number) => {
+        setMouseSpeed(mouseSpeed);
+    });
+
+    ipcMain.handle('getScrollSpeed', () => {
+        return getScrollSpeed();
+    });
+
+    ipcMain.handle('setScrollSpeed', (_, scrollSpeed: number) => {
+        setScrollSpeed(scrollSpeed);
+    });
+
+    ipcMain.handle('setDisableKeys', (_, value: boolean) => {
+        setDisableKeysWithValue(value);
     });
 
     createBackgroundWindow();
