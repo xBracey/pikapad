@@ -12,9 +12,9 @@ Transform your gamepad into a powerful Mac OS control tool. Navigate, click, and
 
 ## 📸 Screenshots
 
-![Pikapad Settings](./screenshot/settings.png)
+![Pikapad Settings](./screenshots/settings.png)
 
-![Pikapad Keyboard](./screenshot/keyboard.png)
+![Pikapad Keyboard](./screenshots/keyboard.png)
 
 ## 🚀 Installation
 
