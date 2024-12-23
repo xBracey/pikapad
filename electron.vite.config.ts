@@ -15,7 +15,7 @@ export default defineConfig({
                 input: {
                     background: './src/renderer/background.html',
                     keyboard: './src/renderer/keyboard.html',
-                    logger: './src/renderer/logger.html'
+                    settings: './src/renderer/settings.html'
                 }
             }
         }

@@ -15,7 +15,7 @@ const setDisableKeys = () => {
     Store.set('toggle', !Store.get('toggle'));
 };
 
-const isKeysDisabled = () => !(Store.get('toggle') ?? false);
+const isKeysDisabled = () => !(Store.get('toggle') ?? true);
 
 const buttonPressMap: Record<
     Exclude<ButtonActions, 'openKeyboard'>,

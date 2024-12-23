@@ -7,7 +7,7 @@ keyboard.config.autoDelayMs = 0;
 export const getKeyboardOpen = () => Store.get('keyboardOpen') ?? false;
 
 export const isKeysDisabled = () => {
-    const isEnabled = Store.get('toggle') ?? false;
+    const isEnabled = Store.get('toggle') ?? true;
     const isKeyboardOpen = getKeyboardOpen();
 
     return !isEnabled || isKeyboardOpen;
